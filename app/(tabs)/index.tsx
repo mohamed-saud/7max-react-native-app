@@ -1,98 +1,264 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// App.tsx
+import Header from '@/components/Header';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-
-export default function HomeScreen() {
+export default function index() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {/* Header */}
+        <Header title='7MAX' />
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* Green Dot */}
+        <View style={styles.center}>
+          <View style={styles.greenDot} />
+        </View>
+
+        {/* Stats */}
+        <View style={styles.statsGrid}>
+          <StatCard
+            title='مجموع الدين'
+            value='100.00'
+            colors={['#6366f1', '#4f46e5']}
+          />
+          <StatCard
+            title='عدد الزبائن'
+            value='2'
+            colors={['#6366f1', '#4f46e5']}
+          />
+          <StatCard
+            title='المبلغ الذي تم سداده هذا الشهر'
+            value='0.00'
+            colors={['#16a34a', '#15803d']}
+          />
+          <StatCard
+            title='مجموع الدين هذا الشهر'
+            value='100.00'
+            colors={['#ef4444', '#dc2626']}
+          />
+        </View>
+
+        {/* Transactions */}
+        <View style={styles.transactions}>
+          <Text style={styles.sectionTitle}>آخر الحركات</Text>
+
+          <DateRow date='2025-10-19' />
+          <Transaction
+            amount='+50.00'
+            name='علاء ثابت'
+            desc='زبون جديد'
+          />
+          <Transaction
+            amount='+50.00'
+            name='نداء'
+            desc='زبون جديد'
+          />
+
+          <DateRow date='2025-10-18' />
+          <Transaction
+            amount='+200000.00'
+            name='احمد المحلوين'
+            desc='زبون جديد'
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
+/* === Components === */
+function StatCard({
+  title,
+  value,
+  colors,
+}: {
+  title: string;
+  value: string;
+  colors: string[];
+}) {
+  return (
+    <View style={[styles.card, { backgroundColor: colors[0] }]}>
+      <Text style={styles.cardTitle}>{title}</Text>
+      <Text style={styles.cardValue}>{value}</Text>
+    </View>
+  );
+}
+
+function DateRow({ date }: { date: string }) {
+  return (
+    <View style={styles.dateRow}>
+      <Text style={styles.dateArrow}>‹</Text>
+      <Text style={styles.dateText}>{date}</Text>
+    </View>
+  );
+}
+
+function Transaction({
+  amount,
+  name,
+  desc,
+}: {
+  amount: string;
+  name: string;
+  desc: string;
+}) {
+  return (
+    <View style={styles.transactionRow}>
+      <Text style={styles.amount}>{amount}</Text>
+      <View style={styles.transactionCenter}>
+        <Text style={styles.textWhite}>{desc}</Text>
+      </View>
+      <Text style={styles.textWhite}>{name}</Text>
+    </View>
+  );
+}
+
+/* === Styles === */
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+  },
+  scroll: {
+    paddingBottom: 100,
+  },
+  textWhite: {
+    color: 'white',
+  },
+  statusBar: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 12,
+  },
+  statusRight: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+  },
+  signalDots: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: 6,
+  },
+  dot: {
+    width: 4,
+    height: 4,
+    backgroundColor: 'white',
+    borderRadius: 2,
+    marginVertical: 1,
+  },
+  batteryContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    marginHorizontal: 6,
   },
-  stepContainer: {
-    gap: 8,
+  batteryBody: {
+    width: 16,
+    height: 8,
+    borderWidth: 1.5,
+    borderColor: 'white',
+  },
+  batteryTip: {
+    width: 2,
+    height: 4,
+    backgroundColor: 'white',
+    marginLeft: 2,
+  },
+  batteryPercent: {
+    backgroundColor: 'white',
+    borderRadius: 4,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+  },
+  batteryText: {
+    color: 'black',
+    fontSize: 10,
+  },
+
+  center: {
+    alignItems: 'center',
+    paddingBottom: 12,
+  },
+  greenDot: {
+    width: 8,
+    height: 8,
+    backgroundColor: '#22c55e',
+    borderRadius: 4,
+  },
+  statsGrid: {
+    flexDirection: 'row-reverse',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  card: {
+    width: '48%',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 12,
+  },
+  cardTitle: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 13,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
+  cardValue: {
+    fontSize: 24,
+    color: 'white',
+  },
+  transactions: {
+    paddingHorizontal: 24,
+    marginTop: 12,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    color: 'white',
+    marginBottom: 16,
+  },
+  dateRow: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 6,
+  },
+  dateText: {
+    color: 'white',
+  },
+  dateArrow: {
+    color: '#9ca3af',
+  },
+  transactionRow: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: '#1f2937',
+    marginVertical: 5,
+  },
+  transactionCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  amount: {
+    color: '#22c55e',
+    fontSize: 18,
+  },
+  navbar: {
+    position: 'absolute',
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    right: 0,
+    backgroundColor: '#0a0a0a',
+    borderTopWidth: 1,
+    borderColor: '#1f2937',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 12,
   },
 });
