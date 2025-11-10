@@ -1,4 +1,6 @@
 import i18n from '@/lib/i18n';
+import { useUser } from '@clerk/clerk-expo';
+import { router } from 'expo-router';
 import {
   Bell,
   Globe,
@@ -10,7 +12,6 @@ import {
   X,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   DevSettings,
   I18nManager,
@@ -26,9 +27,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function SettingsScreen() {
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
-  const { t } = useTranslation();
+  const { user } = useUser();
+  console.log(user);
   const [lang, setLang] = useState(i18n.language);
-
   // 👇 Update RTL/LTR whenever language changes
   useEffect(() => {
     const isArabic = lang === 'ar';
@@ -125,7 +126,11 @@ export default function SettingsScreen() {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.rowEnd}>
+          <TouchableOpacity
+            style={styles.rowEnd}
+            onPress={() => {
+              router.replace('/(auth)/login');
+            }}>
             <Text style={[styles.linkText, { color: 'red' }]}>
               تسجيل الخروج
             </Text>

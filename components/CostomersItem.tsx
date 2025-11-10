@@ -1,10 +1,10 @@
+import { router } from 'expo-router';
 import { ChevronDown, Minus, Plus } from 'lucide-react-native';
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Customer {
   id: number;
-  name: string;
+  fullName: string;
   balance: number;
 }
 
@@ -12,21 +12,27 @@ interface Props {
   customers: Customer[];
 }
 
-export default function CostomersItem({ customers }: Props) {
-  const incrementBalance = (id: number) => {};
+export default function CustomersItem({ customers }: Props) {
+  const incrementBalance = (id: number) => {
+    router.push(`/(protected)/(tabs)/screens/customer/${id}`);
+  };
+  const decrementBalance = (id: number) => {
+    router.push(`/(protected)/(tabs)/screens/customer/${id}`);
+  };
 
-  const decrementBalance = (id: number) => {};
   return (
-    <View style={styles.customerList}>
+    <View className='px-6 flex-1 dark:bg-background-dark light:bg-background-light'>
       {customers.map((c) => (
         <View
           key={c.id}
-          style={styles.customerCard}>
-          <View style={styles.customerHeader}>
-            <View style={styles.buttonsRow}>
+          className='bg-[#2a2a2a]  rounded-2xl p-4 mb-4'>
+          {/* Header */}
+          <View className='flex-row-reverse justify-between items-start mb-3'>
+            {/* Buttons */}
+            <View className='flex-row-reverse m-2 gap-4  space-x-reverse space-x-2'>
               <TouchableOpacity
                 onPress={() => incrementBalance(c.id)}
-                style={[styles.actionButton, { backgroundColor: '#16a34a' }]}>
+                className='bg-green-600 p-2.5  rounded-xl'>
                 <Plus
                   size={20}
                   color='white'
@@ -35,7 +41,7 @@ export default function CostomersItem({ customers }: Props) {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => decrementBalance(c.id)}
-                style={[styles.actionButton, { backgroundColor: '#dc2626' }]}>
+                className='bg-red-600 p-2.5 rounded-xl'>
                 <Minus
                   size={20}
                   color='white'
@@ -43,17 +49,20 @@ export default function CostomersItem({ customers }: Props) {
                 />
               </TouchableOpacity>
             </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.customerName}>{c.name}</Text>
-              <Text style={styles.balanceText}>
-                <Text style={styles.gray}>الرصيد: </Text>
-                {c.balance.toFixed(1)}
+
+            {/* Customer Info */}
+            <View className='items-end'>
+              <Text className='text-white text-lg mb-1'>{c.fullName}</Text>
+              <Text className='text-white text-sm'>
+                <Text className='text-gray-400'>الرصيد: </Text>
+                {Number(33333).toFixed(1)}
               </Text>
             </View>
           </View>
 
-          <View style={styles.detailsLink}>
-            <Text style={styles.graySmall}>اضغط لعرض التفاصيل</Text>
+          {/* Details Link */}
+          <View className='flex-row-reverse justify-end items-center space-x-reverse space-x-1'>
+            <Text className='text-gray-400 text-xs'>اضغط لعرض التفاصيل</Text>
             <ChevronDown
               size={16}
               color='#9ca3af'
@@ -65,53 +74,3 @@ export default function CostomersItem({ customers }: Props) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  customerList: { paddingHorizontal: 24 },
-  customerCard: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-  },
-  customerHeader: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  buttonsRow: {
-    flexDirection: 'row-reverse',
-    gap: 8,
-  },
-  actionButton: {
-    padding: 10,
-    borderRadius: 10,
-  },
-  customerName: { color: 'white', fontSize: 18, marginBottom: 4 },
-  balanceText: { color: 'white' },
-  gray: { color: '#9ca3af', fontSize: 13 },
-  graySmall: { color: '#9ca3af', fontSize: 12 },
-
-  detailsLink: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    gap: 4,
-  },
-
-  addButton: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    alignSelf: 'center',
-    backgroundColor: '#6366f1',
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-    borderRadius: 20,
-    gap: 8,
-    elevation: 8,
-  },
-});

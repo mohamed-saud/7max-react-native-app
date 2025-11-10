@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "7-max",
-    "slug": "7-max",
+    "name": "7max",
+    "slug": "7max",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -25,6 +25,9 @@
       "output": "static",
       "favicon": "./assets/images/logo.png"
     },
+    "extra": {
+      "clerkPublishableKey": "pk_test_dXNlZnVsLXJlaW5kZWVyLTQ2LmNsZXJrLmFjY291bnRzLmRldiQ"
+    },
     "plugins": [
       "expo-router",
       [
@@ -39,7 +42,8 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

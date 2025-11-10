@@ -53,58 +53,16 @@ export default function TabsLayout() {
         },
       }}>
       <Tabs.Screen
-        name='settings'
+        name='screens/CustomersScreen'
         options={{
-          title: 'settings',
+          href: null, // 👈 This hides the tab completely
           headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.settings}
-              title='Settings'
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name='messages'
-        options={{
-          title: 'messages',
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.messages}
-              title='Messages'
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='customers'
-        options={{
-          title: 'customers',
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.accounts}
-              title='customers'
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='index'
-        options={{
-          title: 'index',
-          headerShown: false,
+          title: 'screens/CustomersScreen',
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
               icon={icons.home}
-              title='Home'
+              title='sdss'
             />
           ),
         }}
@@ -125,16 +83,58 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name='screens/CustomersScreen'
+        name='index'
         options={{
-          href: null, // 👈 This hides the tab completely
+          title: 'index',
           headerShown: false,
-          title: 'screens/CustomersScreen',
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
               icon={icons.home}
-              title='sdss'
+              title='Home'
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='customers'
+        options={{
+          title: 'customers',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              icon={icons.accounts}
+              title='customers'
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='messages'
+        options={{
+          title: 'messages',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              icon={icons.messages}
+              title='Messages'
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name='settings'
+        options={{
+          title: 'settings',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              icon={icons.settings}
+              title='Settings'
             />
           ),
         }}
