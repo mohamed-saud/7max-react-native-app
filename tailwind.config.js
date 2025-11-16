@@ -15,7 +15,7 @@ module.exports = {
         // 🌞 Light Theme
         background: {
           light: '#F9FAFB',
-          dark: '#0E0E0E',
+          dark: '#1a1a1a',
         },
         card: {
           light: '#FFFFFF',

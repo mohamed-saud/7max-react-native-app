@@ -1,3 +1,4 @@
+import useTransactionsStore from '@/contexts/useTransactionsStore';
 import { createClient } from '@supabase/supabase-js';
 import { deleteItemAsync, getItemAsync, setItemAsync } from 'expo-secure-store';
 
@@ -29,3 +30,9 @@ export const supabase = createClient(
         },
     },
 );
+supabase
+    .channel( 'transactions' )
+    .on( 'postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, ( payload ) => {
+        useTransactionsStore.getState().addTransaction( payload.new );
+    } )
+    .subscribe();

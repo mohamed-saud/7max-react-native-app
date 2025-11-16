@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
+import { Link } from 'expo-router';
 import { ChevronDown, Minus, Plus } from 'lucide-react-native';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 interface Customer {
   id: number;
@@ -13,12 +13,7 @@ interface Props {
 }
 
 export default function CustomersItem({ customers }: Props) {
-  const incrementBalance = (id: number) => {
-    router.push(`/(protected)/(tabs)/screens/customer/${id}`);
-  };
-  const decrementBalance = (id: number) => {
-    router.push(`/(protected)/(tabs)/screens/customer/${id}`);
-  };
+  // const navigation = useNavigation();
 
   return (
     <View className='px-6 flex-1 dark:bg-background-dark light:bg-background-light'>
@@ -30,24 +25,39 @@ export default function CustomersItem({ customers }: Props) {
           <View className='flex-row-reverse justify-between items-start mb-3'>
             {/* Buttons */}
             <View className='flex-row-reverse m-2 gap-4  space-x-reverse space-x-2'>
-              <TouchableOpacity
-                onPress={() => incrementBalance(c.id)}
+              <Link
+                href={{
+                  pathname: '/(protected)/(tabs)/(customer)/addTransaction',
+                  params: {
+                    id: c.id,
+                    method: 'batch',
+                    fullName: c.fullName,
+                  },
+                }}
                 className='bg-green-600 p-2.5  rounded-xl'>
                 <Plus
                   size={20}
                   color='white'
                   strokeWidth={3}
                 />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => decrementBalance(c.id)}
+              </Link>
+
+              <Link
+                href={{
+                  pathname: '/(protected)/(tabs)/(customer)/addTransaction',
+                  params: {
+                    id: c.id,
+                    method: 'religion',
+                    fullName: c.fullName,
+                  },
+                }}
                 className='bg-red-600 p-2.5 rounded-xl'>
                 <Minus
                   size={20}
                   color='white'
                   strokeWidth={3}
                 />
-              </TouchableOpacity>
+              </Link>
             </View>
 
             {/* Customer Info */}

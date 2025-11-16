@@ -53,33 +53,27 @@ export default function TabsLayout() {
         },
       }}>
       <Tabs.Screen
-        name='screens/CustomersScreen'
+        name='(customer)/AddCustomerScreen'
         options={{
-          href: null, // 👈 This hides the tab completely
+          title: '(customer)/AddCustomerScreen',
           headerShown: false,
-          title: 'screens/CustomersScreen',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.home}
-              title='sdss'
-            />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
-        name='screens/SuppliersScreen'
+        name='(customer)/addTransaction'
         options={{
-          href: null, // 👈 This hides the tab completely
+          href: null,
+          title: 'transaction',
           headerShown: false,
-          title: 'screens/SuppliersScreen',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              focused={focused}
-              icon={icons.home}
-              title='amm'
-            />
-          ),
+        }}
+      />
+      <Tabs.Screen
+        name='(customer)/details'
+        options={{
+          href: null,
+          title: 'details',
+          headerShown: false,
         }}
       />
       <Tabs.Screen

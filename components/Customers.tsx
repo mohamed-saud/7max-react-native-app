@@ -1,16 +1,16 @@
 import AddCustomerButton from '@/components/AddCustomerButton';
 import CostomersItem from '@/components/CostomersItem';
-import { supabase } from '@/lib/supabase';
+import { useGetCustomers } from '@/hooks/uesCustomer';
 import { ChevronDown, Search } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
-  ActivityIndicator,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import LoadingSpiner from './loadingSpiner';
 
 interface Customer {
   id: number;
@@ -18,34 +18,11 @@ interface Customer {
   phone: number;
 }
 
-export default function CustomersScreen() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const getCustomers = async () => {
-    setLoading(true);
-    const { data, error } = await supabase.from('customers').select('*');
-    if (error) console.error('❌ Supabase error:', error.message);
-    else setCustomers(data || []);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getCustomers();
-  }, []);
+export default function CustomersPage() {
+  const { customers, loading } = useGetCustomers();
 
   if (loading) {
-    return (
-      <View className='flex-1 bg-background-dark justify-center items-center'>
-        <ActivityIndicator
-          size='large'
-          color='#6366f1'
-        />
-        <Text className='text-text-dark mt-3 text-base'>
-          جاري تحميل العملاء...
-        </Text>
-      </View>
-    );
+    return <LoadingSpiner />;
   }
 
   return (
@@ -101,7 +78,7 @@ export default function CustomersScreen() {
       </ScrollView>
 
       {/* ➕ Floating Add Button */}
-      <AddCustomerButton />
+      <AddCustomerButton screenName={'AddCustomerScreen'} />
     </View>
   );
 }

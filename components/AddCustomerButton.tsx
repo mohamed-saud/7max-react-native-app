@@ -1,16 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { Link } from 'expo-router';
 import { Plus } from 'lucide-react-native';
-const AddCustomerButton = () => {
+const AddCustomerButton = ({ screenName }: { screenName: string }) => {
   return (
     <View className=' absolute  p-4 bottom-[110px] right-4 rounded-full flex items-center  justify-center'>
-      <TouchableOpacity style={styles.addButton}>
+      <Link
+        href={`/(protected)/(tabs)/(customer)/${screenName}`}
+        style={styles.addButton}>
         <Plus
           size={20}
           color='white'
         />
         <Text style={styles.addButtonText}>إضافة زبون</Text>
-      </TouchableOpacity>
+      </Link>
     </View>
   );
 };

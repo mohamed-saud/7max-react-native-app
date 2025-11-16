@@ -1,67 +1,99 @@
-// App.tsx
+// app/index.tsx
 import Header from '@/components/Header';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import LoadingSpiner from '@/components/loadingSpiner';
+import TransactionRow from '@/components/Transaction';
+import useCustomersStore from '@/contexts/useCustomersStore';
+import useTransactionsStore from '@/contexts/useTransactionsStore';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function index() {
+export default function Index() {
+  const {
+    transactions,
+    loadTransactionsWithCustomers,
+    loading,
+    loadTransactions,
+  } = useTransactionsStore((state) => state);
+  const { customers, loadCustomers } = useCustomersStore((state) => state);
+  const allRegand = transactions
+    .map((t) => Number(t.amount))
+    .reduce((total, num) => total + num, 0);
+
+  const totalPositive = transactions
+    .filter((t) => t.amount > 0)
+    .map((t) => t.amount)
+    .reduce((a, b) => a + b, 0);
+
+  const totalNegative = transactions
+    .filter((t) => t.amount < 0)
+    .map((t) => t.amount)
+    .reduce((a, b) => a + b, 0);
+  // Load all data when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadCustomers();
+      // loadTransactions();
+      loadTransactionsWithCustomers();
+    }, [])
+  );
+  if (!customers && !transactions && loading) return <LoadingSpiner />;
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Header */}
+    <SafeAreaView className='flex-1 bg-background-dark'>
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
         <Header title='7MAX' />
 
-        {/* Green Dot */}
-        <View style={styles.center}>
-          <View style={styles.greenDot} />
+        {/* Online Dot */}
+        <View className='items-center pb-3'>
+          <View className='w-2 h-2 bg-success-dark rounded-full' />
         </View>
 
         {/* Stats */}
-        <View style={styles.statsGrid}>
+        <View className='flex-row-reverse flex-wrap justify-between px-4'>
           <StatCard
             title='مجموع الدين'
-            value='100.00'
-            colors={['#6366f1', '#4f46e5']}
+            value={allRegand}
+            color='primary-dark'
           />
           <StatCard
             title='عدد الزبائن'
-            value='2'
-            colors={['#6366f1', '#4f46e5']}
+            value={customers.length.toString()}
+            color='primary-dark'
           />
           <StatCard
             title='المبلغ الذي تم سداده هذا الشهر'
-            value='0.00'
-            colors={['#16a34a', '#15803d']}
+            value={totalPositive}
+            color='success-dark'
           />
           <StatCard
             title='مجموع الدين هذا الشهر'
-            value='100.00'
-            colors={['#ef4444', '#dc2626']}
+            value={totalNegative}
+            color='danger-dark'
           />
         </View>
 
         {/* Transactions */}
-        <View style={styles.transactions}>
-          <Text style={styles.sectionTitle}>آخر الحركات</Text>
+        <View className='flex-1 px-6 mt-3'>
+          <Text className='text-text-dark text-lg mb-4 font-bold'>
+            آخر الحركات
+          </Text>
 
-          <DateRow date='2025-10-19' />
-          <Transaction
-            amount='+50.00'
-            name='علاء ثابت'
-            desc='زبون جديد'
-          />
-          <Transaction
-            amount='+50.00'
-            name='نداء'
-            desc='زبون جديد'
-          />
-
-          <DateRow date='2025-10-18' />
-          <Transaction
-            amount='+200000.00'
-            name='احمد المحلوين'
-            desc='زبون جديد'
-          />
+          <View className='flex-1'>
+            {[...transactions].reverse().map((tran, index, reversedArray) => {
+              const customer = tran?.customers?.fullName;
+              return (
+                <TransactionRow
+                  key={`${tran.id}-${tran.created_at}-${index}`}
+                  amount={tran.amount}
+                  desc='زبون جديد'
+                  created_at={tran.created_at}
+                  customerName={customer && customer}
+                  prevDate={reversedArray[index - 1]?.created_at} // ✅ correct previous date after reversing
+                />
+              );
+            })}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -72,193 +104,22 @@ export default function index() {
 function StatCard({
   title,
   value,
-  colors,
+  color,
 }: {
   title: string;
-  value: string;
-  colors: string[];
+  value: number | string;
+  color: string;
 }) {
+  const bgColors = {
+    'primary-dark': 'bg-primary-dark',
+    'success-dark': 'bg-success-dark',
+    'danger-dark': 'bg-danger-dark',
+  };
+
   return (
-    <View style={[styles.card, { backgroundColor: colors[0] }]}>
-      <Text style={styles.cardTitle}>{title}</Text>
-      <Text style={styles.cardValue}>{value}</Text>
+    <View className={`w-[48%] rounded-2xl p-5 mb-3 ${bgColors[color]}`}>
+      <Text className='text-textSecondary-dark text-sm mb-2'>{title}</Text>
+      <Text className='text-text-dark text-2xl font-semibold'>{value}</Text>
     </View>
   );
 }
-
-function DateRow({ date }: { date: string }) {
-  return (
-    <View style={styles.dateRow}>
-      <Text style={styles.dateArrow}>‹</Text>
-      <Text style={styles.dateText}>{date}</Text>
-    </View>
-  );
-}
-
-function Transaction({
-  amount,
-  name,
-  desc,
-}: {
-  amount: string;
-  name: string;
-  desc: string;
-}) {
-  return (
-    <View style={styles.transactionRow}>
-      <Text style={styles.amount}>{amount}</Text>
-      <View style={styles.transactionCenter}>
-        <Text style={styles.textWhite}>{desc}</Text>
-      </View>
-      <Text style={styles.textWhite}>{name}</Text>
-    </View>
-  );
-}
-
-/* === Styles === */
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1a1a1a',
-  },
-  scroll: {
-    paddingBottom: 100,
-  },
-  textWhite: {
-    color: 'white',
-  },
-  statusBar: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 12,
-  },
-  statusRight: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center',
-  },
-  signalDots: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginRight: 6,
-  },
-  dot: {
-    width: 4,
-    height: 4,
-    backgroundColor: 'white',
-    borderRadius: 2,
-    marginVertical: 1,
-  },
-  batteryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 6,
-  },
-  batteryBody: {
-    width: 16,
-    height: 8,
-    borderWidth: 1.5,
-    borderColor: 'white',
-  },
-  batteryTip: {
-    width: 2,
-    height: 4,
-    backgroundColor: 'white',
-    marginLeft: 2,
-  },
-  batteryPercent: {
-    backgroundColor: 'white',
-    borderRadius: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-  },
-  batteryText: {
-    color: 'black',
-    fontSize: 10,
-  },
-
-  center: {
-    alignItems: 'center',
-    paddingBottom: 12,
-  },
-  greenDot: {
-    width: 8,
-    height: 8,
-    backgroundColor: '#22c55e',
-    borderRadius: 4,
-  },
-  statsGrid: {
-    flexDirection: 'row-reverse',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  card: {
-    width: '48%',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 12,
-  },
-  cardTitle: {
-    color: 'rgba(255,255,255,0.9)',
-    fontSize: 13,
-    marginBottom: 8,
-  },
-  cardValue: {
-    fontSize: 24,
-    color: 'white',
-  },
-  transactions: {
-    paddingHorizontal: 24,
-    marginTop: 12,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    color: 'white',
-    marginBottom: 16,
-  },
-  dateRow: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: 8,
-    gap: 6,
-  },
-  dateText: {
-    color: 'white',
-  },
-  dateArrow: {
-    color: '#9ca3af',
-  },
-  transactionRow: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 20,
-    backgroundColor: '#1f2937',
-    marginVertical: 5,
-  },
-  transactionCenter: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  amount: {
-    color: '#22c55e',
-    fontSize: 18,
-  },
-  navbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#0a0a0a',
-    borderTopWidth: 1,
-    borderColor: '#1f2937',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-  },
-});

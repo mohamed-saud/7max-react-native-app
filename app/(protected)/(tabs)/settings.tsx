@@ -1,5 +1,5 @@
 import i18n from '@/lib/i18n';
-import { useUser } from '@clerk/clerk-expo';
+import { useClerk, useUser } from '@clerk/clerk-expo';
 import { router } from 'expo-router';
 import {
   Bell,
@@ -28,7 +28,8 @@ export default function SettingsScreen() {
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const { user } = useUser();
-  console.log(user);
+  const { signOut, session } = useClerk();
+
   const [lang, setLang] = useState(i18n.language);
   // 👇 Update RTL/LTR whenever language changes
   useEffect(() => {
@@ -128,8 +129,9 @@ export default function SettingsScreen() {
 
           <TouchableOpacity
             style={styles.rowEnd}
-            onPress={() => {
-              router.replace('/(auth)/login');
+            onPress={async () => {
+              await signOut();
+              router.replace('/(auth)/sign-in');
             }}>
             <Text style={[styles.linkText, { color: 'red' }]}>
               تسجيل الخروج
